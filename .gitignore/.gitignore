@@ -1,0 +1,23 @@
+import data
+
+def makedataintosmallerlist(L):
+   count = 0
+   totalrate = 0
+   rateList = []
+   if count < 60:
+      while count < 60:
+         initialratelist.append(x)
+         totalrate += x
+         count += 1       
+   averagerate = totalrate / count
+   rateList.append(averagerate)
+   initialratelist.remove(x)
+  return(rateList)
+
+
+medicine = input("Enter medicine used:
+")
+normalrate = int(input("The normal rate for a 20 year old is:
+"))
+print("The medicine used that may affect the
+user's sleep is: ", medicine)
