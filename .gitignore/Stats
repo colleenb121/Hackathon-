@@ -1,0 +1,251 @@
+def sum(L):
+    ct=0
+    for e in L:
+        ct+=e
+    return ct
+
+def mean(L):
+    y=0
+    for i in range(len(L)):
+        y=L[i]+y
+    return y/(len(L))
+
+def squares(L):
+    for i in range(len(L)):
+        L[i]=L[i]**2
+    return L
+
+def sumOfSquares(L):
+    squares(L)
+    return sum(L)
+   
+def median(L):
+    L2=sorted(L)
+    if len(L)%2==1:
+        return L2[(len(L)//2)]
+    else:
+        return ((L2[(len(L)//2)-1]+L2[(len(L)//2)])/2)
+                
+def mode(L):
+    L2=sorted(L)
+    dict2 = {}
+    for i in L2:
+            count = L2.count(i)
+            if i not in dict2.keys():
+                dict2[i] = count
+    maximum = 0 
+    max_key = -1
+    for key in dict2:
+        if(dict2[key]>maximum):
+            maximum = dict2[key]
+            max_key = key 
+        elif(dict2[key]==maximum):
+            if(key<max_key):
+                maximum = dict2[key]
+                max_key = key
+
+    return max_key
+        
+        
+def varPop(L):
+    meanList=[mean(L)]*len(L)
+    print(mean(L),"mean of L")
+    diffList=subtractLists(L,meanList)
+    sumSquaredList=sumOfSquares(diffList)
+    return sumSquaredList/len(L)
+
+def varSamp(L):
+    meanList=[mean(L)]*len(L)
+    print(mean(L),"mean of L")
+    diffList=subtractLists(L,meanList)
+    sumSquaredList=sumOfSquares(diffList)
+    return sumSquaredList/(len(L)-1)
+
+def stdPop(L):
+    return (varPop(L))**(1/2)
+
+def stdSamp(L):
+    return (varSamp(L))**(1/2)
+
+def sumOfProducts(L1,L2):
+    L3=[]
+    y=0
+    if len(L1)==len(L2):
+        for i in range(len(L1)):
+            L3=L1[i]*L2[i]
+            y=y+L3
+    else:
+        return None
+    return y
+
+def erf(x):
+    if x==0:
+        return 0
+    e = 2.7182818284590452353602874713526624977572470
+    t= 1/(1+(abs(x)/2))
+    tau = t * e ** ( - x ** 2 - 1.26551223 + 1.00002368 * t + 0.37409196 * t * t + 0.09678418 * t ** 3 - 0.18628806 * t ** 4 + 0.27886807 * t ** 5 - 1.13520398 * t ** 6 + 1.48851587 * t ** 7 - 0.82215223 * t ** 8 + 0.17087277 * t ** 9 )
+    if x<0:
+        return tau-1
+    elif x>0:
+        return 1-tau
+
+def bellCurveAreaLeftOf(x):
+    x=(x/(2**(1/2)))
+    output=(1+erf(x))/2
+    return output
+
+def bellCurveAreaRightOf(x):
+    x=(x/(2**(1/2)))
+    output=(1-erf(x))/2
+    return output
+
+def bellCurveAreaBetween(x,y):
+    if x>y:
+        return bellCurveAreaBetween(y,x)
+    return 1-bellCurveAreaLeftOf(x)-bellCurveAreaRightOf(y)
+
+def regressionSlopeIntR(L,M):
+    Slope=0
+    Int=0
+    R=0
+    if len(L)==len(M):
+        Sx=sum(L)
+        Sy=sum(M)
+        Sxx=sumOfProducts(L,L)
+        Syy=sumOfProducts(M,M)
+        Sxy=sumOfProducts(L,M)
+        n=len(L)
+        i=(((Sy)*(Sxx))-((Sx)*(Sxy)))
+        d=((n*(Sxx))-((Sx*Sx)))
+        Int=(i)/(d)
+        f=(n*(Sxy))-((Sx*(Sy)))
+        print(f)
+        g=((n*(Sxx))-(Sx*Sx))
+        print(g)
+        Slope= ((f)/(g))
+        e=(((n*(Sxx))-(Sx*Sx)))
+        q=((n*(Syy))-(Sy*Sy))
+        w=(e*q)
+        c=(n*(Sxy))-((Sx*(Sy)))
+        f=(w**(.5))
+        R=(c)/(f)
+        return [Slope, Int, R]
+    
+
+
+def combineSublists(L):
+    total=[]
+    for i in L:
+        try:
+            i=int(i)
+            total.append(i)
+        except:
+            for j in i:
+                total.append(j)
+    return total
+    
+
+def groupSums(L):
+    total=[]
+    for i in range(len(L)):
+        d=L[i]
+        total.append(sum(d))
+    return total
+
+def groupMeans(L):
+    total=[]
+    for i in range(len(L)):
+        d=L[i]
+        total.append(mean(d))
+    return total
+
+
+def constantSameSizeList(L,c):
+    total=[]
+    for e in range(len(L)):
+        total.append(L[e])
+    for i in range(len(L)):
+        total[i]=c
+    return total
+
+def constantSameSizeListOfLists(L,c):
+    total=constantSameSizeList(L,c)
+    for i in range(len(L)):
+        for e in range(len(L[i])):
+            total[i]=(constantSameSizeList(L[i],c))     
+    return total
+
+def subtractLists(L1,L2):
+    if len(L1)!=len(L2):
+        return None
+    L3=[0]*len(L1)
+    for i in range(len(L3)):
+        L3[i]=L1[i]-L2[i]
+    return L3
+
+def sumOfSquaresBreakdown(L):
+    List=L
+    TO= combineSublists(L)
+    a=[]
+    grandMean=mean(TO)
+    SSBG=1
+    n=len(L)
+    y=[]
+    g=groupMeans(L)
+    for i in range(len(TO)):
+                TO[i]=(TO[i]-grandMean)
+    SSTO= sumOfSquares(TO)
+    for f in range(len(L)):
+        a=L[f]
+        for i in range(len(a)):
+            a[i]=a[i]-g[f]
+    WG=combineSublists(L)
+    SSWG= sumOfSquares(WG)
+    for f in range(len(List)):
+        y=List[f]
+        for i in range(len(y)):
+            y[i]=g[f]-grandMean
+    BG=combineSublists(List)
+    SSBG= sumOfSquares(BG)
+    return [SSTO, SSWG, SSBG]
+
+
+def rowsToColumns(L):
+    a=[]
+    for e in L[0]:
+        a.append([])
+    for f in range(len(a)):
+        for i in range(len(L)):
+            a[f].append(L[i][f]) 
+    return a
+
+def chiSquareExpectations(L):
+    Lx=rowsToColumns(L)
+    rowSums=groupSums(L)
+    columnSums=groupSums(Lx)
+    Ly=combineSublists(L)
+    overall=sum(Ly)
+    expectedValues=constantSameSizeListOfLists(L,0)
+    for j in range(len(rowSums)):
+        for i in range((len(columnSums))):
+                expectedValues[j][i]=((columnSums[i]*rowSums[j])/overall)
+                                      
+    return expectedValues
+
+
+def computeChiSquare(L):
+    #print("hi")
+    orginalList=combineSublists(L)
+    L1=[]
+    L1=chiSquareExpectations(L)
+    L2=combineSublists(L1)
+    print(L)
+    L3=subtractLists(orginalList,L2)
+    print(L)
+    expectedValues=squares(L3)
+    a=[]
+    for i in range(len(orginalList)):
+        a.append(expectedValues[i]/L2[i])
+    f=sum(a)
+    print(L)
+    return f
